@@ -24,11 +24,12 @@ TOOL_NAMES = [
     "get_monthly_sales_stats",
     "plan_bulk_buy",
 ]
-SAMSUNG_PRODUCTS = [
-    ("Samsung TV", "electronics", 499.99, 25),
-    ("Samsung Fridge", "electronics", 899.99, 80),
-    ("Samsung Washing Machine", "electronics", 699.99, 45),
-    ("Samsung Microwave", "electronics", 149.99, 12),
+PARTNER_NAME = "NovaTech"
+PARTNER_PRODUCTS = [
+    ("NovaTech TV", "electronics", 499.99, 25),
+    ("NovaTech Fridge", "electronics", 899.99, 80),
+    ("NovaTech Washing Machine", "electronics", 699.99, 45),
+    ("NovaTech Microwave", "electronics", 149.99, 12),
 ]
 
 
@@ -107,7 +108,7 @@ def create_shop_db() -> None:
         INSERT OR IGNORE INTO products (name, category, price, stock)
         VALUES (?, ?, ?, ?)
         """,
-        SAMSUNG_PRODUCTS,
+        PARTNER_PRODUCTS,
     )
     cursor.execute(
         """
@@ -115,7 +116,7 @@ def create_shop_db() -> None:
             (name, category, lead_time_days, min_order_units, discount_percent)
         VALUES (?, ?, ?, ?, ?)
         """,
-        ("Samsung", "electronics", 14, 50, 8.0),
+        (PARTNER_NAME, "electronics", 14, 50, 8.0),
     )
 
     conn.commit()
@@ -208,10 +209,10 @@ def parse_sales_report(report: str) -> list:
     text = report.lower()
     parsed = []
     product_patterns = [
-        ("Samsung TV", r"(\d+)\s*(?:samsung\s+)?tvs?\b"),
-        ("Samsung Fridge", r"(\d+)\s*(?:samsung\s+)?fridges?\b"),
-        ("Samsung Washing Machine", r"(\d+)\s*(?:samsung\s+)?washing machines?\b"),
-        ("Samsung Microwave", r"(\d+)\s*(?:samsung\s+)?microwaves?\b"),
+        ("NovaTech TV", r"(\d+)\s*(?:novatech\s+)?tvs?\b"),
+        ("NovaTech Fridge", r"(\d+)\s*(?:novatech\s+)?fridges?\b"),
+        ("NovaTech Washing Machine", r"(\d+)\s*(?:novatech\s+)?washing machines?\b"),
+        ("NovaTech Microwave", r"(\d+)\s*(?:novatech\s+)?microwaves?\b"),
     ]
 
     for product_name, pattern in product_patterns:
@@ -219,8 +220,8 @@ def parse_sales_report(report: str) -> list:
         if match:
             parsed.append({"product_name": product_name, "quantity": int(match.group(1))})
 
-    if re.search(r"sold[- ]?out\s+(?:all\s+)?(?:samsung\s+)?microwaves?", text):
-        parsed.append({"product_name": "Samsung Microwave", "quantity": "all"})
+    if re.search(r"sold[- ]?out\s+(?:all\s+)?(?:novatech\s+)?microwaves?", text):
+        parsed.append({"product_name": "NovaTech Microwave", "quantity": "all"})
 
     return parsed
 
@@ -237,14 +238,14 @@ def update_inventory_from_sales_report(
     conn.row_factory = sqlite3.Row
     cursor = conn.cursor()
     parsed_sales = [
-        {"product_name": "Samsung TV", "quantity": tv_sold},
-        {"product_name": "Samsung Fridge", "quantity": fridge_sold},
-        {"product_name": "Samsung Washing Machine", "quantity": washing_machine_sold},
+        {"product_name": "NovaTech TV", "quantity": tv_sold},
+        {"product_name": "NovaTech Fridge", "quantity": fridge_sold},
+        {"product_name": "NovaTech Washing Machine", "quantity": washing_machine_sold},
     ]
     if microwave_sold_out:
-        parsed_sales.append({"product_name": "Samsung Microwave", "quantity": "all"})
+        parsed_sales.append({"product_name": "NovaTech Microwave", "quantity": "all"})
     elif microwave_sold > 0:
-        parsed_sales.append({"product_name": "Samsung Microwave", "quantity": microwave_sold})
+        parsed_sales.append({"product_name": "NovaTech Microwave", "quantity": microwave_sold})
 
     updates = []
     note = (
@@ -395,7 +396,7 @@ def plan_bulk_buy(category: str, partner: str) -> dict:
     if partner_row and 0 < total_units < partner_row["min_order_units"]:
         recommendations.append(
             {
-                "product": "Assorted Samsung electronics",
+                "product": f"Assorted {partner_row['name']} electronics",
                 "current_stock": None,
                 "monthly_units_sold": None,
                 "suggested_order_units": partner_row["min_order_units"] - total_units,
@@ -533,23 +534,23 @@ def build_tool() -> types.Tool:
                         "tv_sold": types.Schema(
                             type=types.Type.INTEGER,
                             minimum=0,
-                            description="Number of Samsung TVs sold.",
+                            description="Number of NovaTech TVs sold.",
                         ),
                         "fridge_sold": types.Schema(
                             type=types.Type.INTEGER,
                             minimum=0,
-                            description="Number of Samsung fridges sold.",
+                            description="Number of NovaTech fridges sold.",
                         ),
                         "washing_machine_sold": types.Schema(
                             type=types.Type.INTEGER,
                             minimum=0,
-                            description="Number of Samsung washing machines sold.",
+                            description="Number of NovaTech washing machines sold.",
                         ),
                         "microwave_sold": types.Schema(
                             type=types.Type.INTEGER,
                             minimum=0,
                             description=(
-                                "Number of Samsung microwaves sold. Use 0 when "
+                                "Number of NovaTech microwaves sold. Use 0 when "
                                 "microwave_sold_out is true and no exact count is given."
                             ),
                         ),
@@ -607,7 +608,7 @@ def build_tool() -> types.Tool:
                         ),
                         "partner": types.Schema(
                             type=types.Type.STRING,
-                            description="Partner or vendor name, such as Samsung.",
+                            description="Partner or vendor name, such as NovaTech.",
                         ),
                     },
                     required=["category", "partner"],
@@ -728,14 +729,14 @@ def extract_structured_sales(prompt: str) -> dict:
         return int(match.group(1)) if match else 0
 
     return {
-        "tv_sold": find_count(r"(\d+)\s*(?:samsung\s+)?tvs?\b"),
-        "fridge_sold": find_count(r"(\d+)\s*(?:samsung\s+)?fridges?\b"),
+        "tv_sold": find_count(r"(\d+)\s*(?:novatech\s+)?tvs?\b"),
+        "fridge_sold": find_count(r"(\d+)\s*(?:novatech\s+)?fridges?\b"),
         "washing_machine_sold": find_count(
-            r"(\d+)\s*(?:samsung\s+)?washing machines?\b"
+            r"(\d+)\s*(?:novatech\s+)?washing machines?\b"
         ),
-        "microwave_sold": find_count(r"(\d+)\s*(?:samsung\s+)?microwaves?\b"),
+        "microwave_sold": find_count(r"(\d+)\s*(?:novatech\s+)?microwaves?\b"),
         "microwave_sold_out": bool(
-            re.search(r"sold[- ]?out\s+(?:all\s+)?(?:samsung\s+)?microwaves?", text)
+            re.search(r"sold[- ]?out\s+(?:all\s+)?(?:novatech\s+)?microwaves?", text)
         ),
     }
 
@@ -750,10 +751,10 @@ def infer_category(prompt: str) -> str:
 
 
 def infer_partner(prompt: str) -> str:
-    if "samsung" in prompt.lower():
-        return "Samsung"
+    if "novatech" in prompt.lower():
+        return PARTNER_NAME
 
-    return "Samsung"
+    return PARTNER_NAME
 
 
 def run_function_call(function_call, prompt: str, debug: bool):

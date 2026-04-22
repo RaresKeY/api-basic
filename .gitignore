@@ -11,6 +11,7 @@ venv/
 
 # Local databases and generated run artifacts
 *.db
+!examples/*.db
 db-fetch-log.md
 final-report.md
 final_response.md
