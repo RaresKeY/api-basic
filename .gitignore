@@ -1,0 +1,20 @@
+# Python
+__pycache__/
+*.py[cod]
+
+# Virtual environments
+.venv/
+venv/
+
+# Secrets
+.env
+
+# Local databases and generated run artifacts
+*.db
+db-fetch-log.md
+final-report.md
+final_response.md
+runs/
+
+# Streamlit
+.streamlit/secrets.toml
