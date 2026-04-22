@@ -17,3 +17,11 @@ python3 tool-call-experiment.py --debug 'We sold 100 electronics today - 15 TVs,
 ```
 
 This copies `examples/shop-example.db` into a timestamped `runs/` folder, then lets the model drive generic tools without regex-based argument correction.
+
+Evaluate lite and Gemma 4 model behavior:
+
+```bash
+python3 model-tool-eval.py
+```
+
+This writes `model-tool-eval-report.md`.
