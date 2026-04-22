@@ -12,7 +12,7 @@ from google.genai.errors import APIError
 from google.genai.errors import ServerError
 
 
-MODEL = "gemma-4-26b-a4b-it"
+MODEL = "gemma-4-31b-it"
 EXAMPLE_DB_PATH = Path("examples/shop-example.db")
 REPORT_PATH = Path("model-tool-eval-report.md")
 RUNS_DIR = Path("runs")

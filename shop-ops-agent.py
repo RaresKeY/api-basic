@@ -11,7 +11,7 @@ from google.genai import types
 from google.genai.errors import ServerError
 
 
-MODEL = "gemma-4-26b-a4b-it"
+MODEL = "gemma-4-31b-it"
 EXAMPLE_DB_PATH = Path("examples/shop-example.db")
 DB_PATH = Path("shop.db")
 LOG_PATH = Path("db-fetch-log.md")

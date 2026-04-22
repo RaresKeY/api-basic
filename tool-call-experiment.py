@@ -12,7 +12,7 @@ from google.genai import types
 from google.genai.errors import ServerError
 
 
-MODEL = "gemma-4-26b-a4b-it"
+MODEL = "gemma-4-31b-it"
 EXAMPLE_DB_PATH = Path("examples/shop-example.db")
 RUNS_DIR = Path("runs")
 RETRY_STATUS_CODES = {500, 502, 503, 504}
