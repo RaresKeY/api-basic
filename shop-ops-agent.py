@@ -153,7 +153,7 @@ def get_text(response) -> str:
         if not candidate.content:
             continue
         for part in candidate.content.parts or []:
-            if part.text:
+            if part.text and not getattr(part, "thought", False):
                 parts.append(part.text)
 
     return "\n".join(parts).strip()
@@ -549,11 +549,7 @@ def run_agent(prompt: str, model: str, debug: bool) -> str:
                 role="user",
                 parts=[
                     types.Part.from_text(
-                        text=(
-                            "If all required tool work is complete, return only the final "
-                            "user-facing Markdown answer. Do not include process narration, "
-                            "reasoning, tool-call summaries, or phrases like 'I will now'."
-                        )
+                        text="If all required tool work is complete, return the final Markdown answer."
                     )
                 ],
             )

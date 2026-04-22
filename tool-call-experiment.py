@@ -69,7 +69,7 @@ def get_text(response) -> str:
         if not candidate.content:
             continue
         for part in candidate.content.parts or []:
-            if part.text:
+            if part.text and not getattr(part, "thought", False):
                 parts.append(part.text)
 
     return "\n".join(parts).strip()
