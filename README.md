@@ -10,7 +10,7 @@ This updates `shop.db`, writes the chronological tool log to `db-fetch-log.md`, 
 
 The included sample data is fictional and for local demo purposes only.
 
-Generic tool-call experiment without Python prompt parsing:
+Copied-DB experiment with the same generic tool style:
 
 ```bash
 python3 tool-call-experiment.py --debug 'We sold 100 electronics today - 15 TVs, 50 fridges, 35 washing machines - and we sold-out ALL microwaves. Update stock, give me monthly statistics - and plan the next bulk-buy electronics from our NovaTech partner.'
