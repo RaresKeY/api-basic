@@ -543,6 +543,21 @@ def run_agent(prompt: str, model: str, debug: bool) -> str:
             debug_print("Tool call", {"name": tool_result["name"], "args": tool_result["args"]}, debug)
             debug_print("Tool result", tool_result["result"], debug)
             contents.append(make_function_response(function_call, tool_result["result"]))
+
+        contents.append(
+            types.Content(
+                role="user",
+                parts=[
+                    types.Part.from_text(
+                        text=(
+                            "If all required tool work is complete, return only the final "
+                            "user-facing Markdown answer. Do not include process narration, "
+                            "reasoning, tool-call summaries, or phrases like 'I will now'."
+                        )
+                    )
+                ],
+            )
+        )
     else:
         final_text = "Stopped after reaching the experiment step limit."
         append_log(LOG_PATH, "Step limit reached", final_text)
